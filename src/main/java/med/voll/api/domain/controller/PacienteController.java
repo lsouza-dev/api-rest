@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.sql.SQLOutput;
+
 // Anotação para indicar que esta classe é um controlador REST
 @RestController
 // Define a rota base para este controlador
@@ -25,7 +27,7 @@ public class PacienteController {
     // Método para cadastrar um novo paciente
     @PostMapping()
     @Transactional
-    public ResponseEntity cadastrarPaciente(@RequestBody @Valid DadosCadastroPaciente dados, UriComponentsBuilder uriBuilder){
+    public ResponseEntity cadastrarPaciente(@RequestBody @Valid DadosCadastroPaciente dados, UriComponentsBuilder uriBuilder) {
         // Cria um novo objeto Paciente com os dados fornecidos
         Paciente paciente = new Paciente(dados);
         // Salva o novo paciente no repositório
@@ -38,7 +40,7 @@ public class PacienteController {
 
     // Método para listar os pacientes
     @GetMapping()
-    public ResponseEntity<Page<DadosListagemPaciente>> listarPacientes(@PageableDefault(size = 10, sort = "nome") Pageable pageable){
+    public ResponseEntity<Page<DadosListagemPaciente>> listarPacientes(@PageableDefault(size = 10, sort = "nome") Pageable pageable) {
         // Obtém uma página de pacientes ativos, mapeada para DadosListagemPaciente
         var page = repository.findAllByAtivoTrue(pageable).map(DadosListagemPaciente::new);
         // Retorna uma resposta HTTP 200 (OK) com a página de pacientes
@@ -48,7 +50,7 @@ public class PacienteController {
     // Método para deletar um paciente
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deletarPaciente(@PathVariable Long id){
+    public ResponseEntity deletarPaciente(@PathVariable Long id) {
         // Obtém a referência do paciente pelo ID
         var paciente = repository.getReferenceById(id);
         // Marca o paciente como apagado
@@ -59,7 +61,7 @@ public class PacienteController {
 
     // Método para obter detalhes de um paciente específico
     @GetMapping("/{id}")
-    public ResponseEntity descreverPaciente(@PathVariable Long id){
+    public ResponseEntity descreverPaciente(@PathVariable Long id) {
         // Obtém a referência do paciente pelo ID
         var paciente = repository.getReferenceById(id);
         // Retorna uma resposta HTTP 200 (OK) com os detalhes do paciente
@@ -69,7 +71,7 @@ public class PacienteController {
     // Método para atualizar os dados de um paciente
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizarPaciente(@RequestBody @Valid DadosAtualizacaoPaciente dados){
+    public ResponseEntity atualizarPaciente(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
         // Obtém a referência do paciente pelo ID
         Paciente paciente = repository.getReferenceById(dados.id());
         // Atualiza os dados do paciente

@@ -1,8 +1,11 @@
 package med.voll.api.infra.security;
 
 // Importações necessárias para a configuração de segurança
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // Anotação para indicar que esta classe é uma classe de configuração do Spring
 @Configuration
@@ -19,14 +23,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfigurations {
 
+    // Injeção de dependência do filtro de segurança personalizado
+    @Autowired
+    private SecurityFilter securityFilter;
+
     // Definindo um Bean para a cadeia de filtros de segurança
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // Desabilitando a proteção CSRF (Cross-Site Request Forgery)
+                // Desabilitando CSRF (Cross-Site Request Forgery)
                 .csrf(AbstractHttpConfigurer::disable)
-                // Configurando a política de criação de sessão como STATELESS, ou seja, sem estado
+                // Configurando a política de criação de sessão como STATELESS
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Configurando autorizações de requisições HTTP
+                .authorizeHttpRequests(req -> {
+                    // Permitindo acesso público ao endpoint de login
+                    req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    // Exigindo autenticação para qualquer outra requisição
+                    req.anyRequest().authenticated();
+                })
+                // Adicionando o filtro de segurança personalizado antes do filtro de autenticação padrão do Spring
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
