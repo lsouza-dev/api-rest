@@ -8,7 +8,7 @@ import med.voll.api.domain.medico.Especialidade;
 import java.time.LocalDateTime;
 
 public record DadosAgendamentoConsulta(
-        Long id,
+
         Long idMedico,
         @NotNull Long idPaciente,
         @NotNull @Future LocalDateTime data,
@@ -16,6 +16,6 @@ public record DadosAgendamentoConsulta(
 
 ) {
     public DadosAgendamentoConsulta(Consulta consulta) {
-        this(consulta.getId(),consulta.getMedico().getId(),consulta.getPaciente().getId(),consulta.getData(),consulta.getMedico().getEspecialidade());
+        this(consulta.getMedico().getId(),consulta.getPaciente().getId(),consulta.getData(),consulta.getMedico().getEspecialidade());
     }
 }
