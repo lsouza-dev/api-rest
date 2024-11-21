@@ -1,4 +1,4 @@
-package med.voll.api.domain.controller;
+package med.voll.api.controller;
 
 import med.voll.api.domain.consulta.AgendaDeConsultas;
 import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
@@ -19,17 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 class ConsultaControllerTest {
-
 
     @Autowired
     private MockMvc mvc;
@@ -50,20 +48,17 @@ class ConsultaControllerTest {
         var response = mvc.perform(post("/consultas"))
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    // Trecho de código suprimido
-
     @Test
-    @DisplayName("Deveria devolver codigo http 200 quando informações estão validas")
+    @DisplayName("Deveria devolver codigo http 200 quando informacoes estao validas")
     @WithMockUser
     void agendar_cenario2() throws Exception {
         var data = LocalDateTime.now().plusHours(1);
         var especialidade = Especialidade.CARDIOLOGIA;
 
-
-        var dadosDetalhamento = new DadosDetalhamentoConsulta(null, 2L, 5L, data);
+        var dadosDetalhamento = new DadosDetalhamentoConsulta(null, 2l, 5l, data);
         when(agendaDeConsultas.agendar(any())).thenReturn(dadosDetalhamento);
 
         var response = mvc
@@ -76,15 +71,13 @@ class ConsultaControllerTest {
                 )
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.OK.value(),response.getStatus());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 
         var jsonEsperado = dadosDetalhamentoConsultaJson.write(
                 dadosDetalhamento
         ).getJson();
 
-        assertEquals(jsonEsperado,response.getContentAsString());
+        assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
     }
 
 }
-
-
