@@ -1,6 +1,7 @@
 package med.voll.api.domain.controller;
 
 // Importações necessárias para a configuração do controller
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import med.voll.api.domain.medico.*;
@@ -16,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 // Define a rota base para este controlador
 @RequestMapping("/medicos")
+@SecurityRequirement(name = "bearer-key")
 public class MedicoController {
 
     // Injeção de dependência do repositório de médicos

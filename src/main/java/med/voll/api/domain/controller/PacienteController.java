@@ -1,6 +1,7 @@
 package med.voll.api.domain.controller;
 
 // Importações necessárias para a configuração do controller
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import med.voll.api.domain.paciente.*;
@@ -18,6 +19,7 @@ import java.sql.SQLOutput;
 @RestController
 // Define a rota base para este controlador
 @RequestMapping("/pacientes")
+@SecurityRequirement(name = "bearer-key")
 public class PacienteController {
 
     // Injeção de dependência do repositório de pacientes

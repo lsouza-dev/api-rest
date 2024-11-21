@@ -39,6 +39,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(req -> {
                     // Permitindo acesso público ao endpoint de login
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers("/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**").permitAll();
                     // Exigindo autenticação para qualquer outra requisição
                     req.anyRequest().authenticated();
                 })
@@ -46,6 +47,8 @@ public class SecurityConfigurations {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+
 
     // Definindo um Bean para o gerenciador de autenticação
     @Bean
